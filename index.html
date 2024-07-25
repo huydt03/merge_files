@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
+	<form onsubmit="merge_files(event)">
+		<input value="" name="" placeholder="orders by name a|b|c" id="orders">
+		<input type="file" id="files" webkitdirectory directory/>
+		<button>sdf</button>
+	</form>
+
+	<textarea id="fileContents" spellcheck="false" style="width: 100%; height: 400px;"></textarea>
+
+	<script type="text/javascript">
+
+		let target_orders = document.getElementById('orders')
+		let target_file = document.getElementById('files')
+		let target_result = document.getElementById('fileContents');
+
+		function merge_files(e){
+
+			let files = target_file.files;
+			if(!files) return false;
+
+			let result = {};
+			let length = files.length - 1;
+			for(let i in files){
+				let reader = new FileReader();
+				try{
+					reader.readAsText(files[i], "UTF-8");
+				}catch(e){
+					console.log(files[i])
+				}
+				
+			    reader.onload = function (evt) {
+			        result[files[i].name] = evt.target.result;
+			        if(i == length){
+			        	let orders = target_orders.value.split('|');
+			        	let value = ``;
+			        	for(let i in orders){
+			        		let k = orders[i];
+			        		value += result[k] + '\n\n';
+			        	}
+			        	target_result.innerHTML = value;
+			        }
+			    }
+			    reader.onerror = function (evt) {
+			    	console.log("error reading file");
+			    }
+			}
+
+			e.preventDefault();
+		}
+	</script>
+</body>
+</html>
